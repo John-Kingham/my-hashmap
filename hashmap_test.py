@@ -1,12 +1,16 @@
 import unittest
-
+from hashmap import HashMap
 
 class TestHashmap(unittest.TestCase):
 
-    @unittest.skip("Skip for now")
     def test_assign(self):
-        self.fail()
+        hash_map = HashMap(20)
+        hash_map.assign('Anne', 53)
+        hash_map.assign('Bob', 50)
+        hash_map.assign('Colin', 17)
+        self.assertEqual(hash_map.retrieve('Bob'), 50)
+        self.assertIsNone(hash_map.retrieve('Dave'))
 
-    @unittest.skip("Skip for now")
     def test_retrieve(self):
-        self.fail()
+        hash_map = HashMap(20)
+        self.assertIsNone(hash_map.retrieve('Anne'))       
