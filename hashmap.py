@@ -1,50 +1,74 @@
 class HashMap:
     """
-    A hashmap that uses a simple implementation of open addressing to resolve address conflicts.
-    It doesn't use linked lists, so if the underlying array fills up, the hashmap will fill up.
+    A hashmap. 
+    
+    Stores values that are accessible with a key. For example, the 
+    key of "Joe Blogs" might be mapped to the value "42".
     """
 
-    def __init__(self, array_size):
-        self.array_size = array_size
-        self.array = [None for i in range(array_size)]
+    def __init__(self, size):
+        """
+        Parameters
+        ----------
+        size: int
+            The maximum number of key-value pairs the hashmap can store.
+        """
+        self.__size = size
+        self.__array = [None for i in range(size)]
 
-    def get_hash(self, key, collisions):
+    def __get_hash(self, key, collisions):
         hash_code = sum(key.encode()) + collisions
-        return hash_code % self.array_size
+        return hash_code % self.__size
 
     def assign(self, key, value):
+        """
+        Adds or updates a key-value pair.
+        
+        Parameters
+        ----------
+        key: String
+            A key that can be used to update and retrieve value.
+        value: Object
+            An object associated with the key.
 
-        # keep trying until assignment is successful
-        collisions = 0
-        while True:
-
-            # Use a hash to choose an index to store the key-value pair
-            index = self.get_hash(key, collisions)
-
-            # if the index is empty or if the keys match, store the key-value pair and exit
-            if self.array[index] is None or self.array[index][0] == key:
-                self.array[index] = [key, value]
+        Returns
+        -------
+        None
+            If the value is added or updated.
+        int
+            Returns 1 if the value couldn't be stored because the hashmap was full.        
+        """
+        num_collisions = 0
+        while num_collisions < self.__size:
+            index = self.__get_hash(key, num_collisions)
+            if self.__array[index] is None or self.__array[index][0] == key:
+                self.__array[index] = [key, value]
                 return
-
-            # the index holds a different key, so use open addressing to select another index
-            collisions += 1
+            num_collisions += 1
+        return 1
 
     def retrieve(self, key):
+        """
+        Retrieves the value associated with key.
+        
+        Parameters
+        ----------
+        key: String
+            The key associated with the value.
 
-        # keep trying until the key is definitely in or not in the hashmap
-        collisions = 0
-        while True:
-
-            # Use a hash to find the index for the key
-            index = self.get_hash(key, collisions)
-
-            # if the index is empty, the key isn't in the hashmap so return nothing
-            if self.array[index] is None:
+        Returns
+        -------
+        None
+            If the key wasn't found.
+        Object
+            The value associated with key, if the key was found.
+        """
+        num_collisions = 0
+        while num_collisions < self.__size:
+            index = self.__get_hash(key, num_collisions)
+            if self.__array[index] is None:
                 return None
-
-            # if the keys match, return the value mapped to the key
-            if self.array[index][0] == key:
-                return self.array[index][1]
-
-            # the index holds a different key, so use open addressing to select another index
-            collisions += 1
+            if self.__array[index][0] == key:
+                return self.__array[index][1]
+            num_collisions += 1
+        return None
